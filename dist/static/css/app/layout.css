@@ -1071,6 +1071,9 @@ video {
 .z-\[101\] {
   z-index: 101;
 }
+.z-\[200\] {
+  z-index: 200;
+}
 .mx-auto {
   margin-left: auto;
   margin-right: auto;
@@ -1227,6 +1230,12 @@ video {
 }
 .h-px {
   height: 1px;
+}
+.max-h-40 {
+  max-height: 10rem;
+}
+.max-h-\[90vh\] {
+  max-height: 90vh;
 }
 .min-h-\[90vh\] {
   min-height: 90vh;
@@ -1480,6 +1489,11 @@ video {
   --tw-space-y-reverse: 0;
   margin-top: calc(2rem * calc(1 - var(--tw-space-y-reverse)));
   margin-bottom: calc(2rem * var(--tw-space-y-reverse));
+}
+.space-y-2 > :not([hidden]) ~ :not([hidden]) {
+  --tw-space-y-reverse: 0;
+  margin-top: calc(0.5rem * calc(1 - var(--tw-space-y-reverse)));
+  margin-bottom: calc(0.5rem * var(--tw-space-y-reverse));
 }
 .overflow-hidden {
   overflow: hidden;
@@ -1851,6 +1865,9 @@ video {
 .pt-8 {
   padding-top: 2rem;
 }
+.pt-2 {
+  padding-top: 0.5rem;
+}
 .text-center {
   text-align: center;
 }
@@ -2033,6 +2050,12 @@ video {
 .placeholder-\[\#b0a090\]::placeholder {
   --tw-placeholder-opacity: 1;
   color: rgb(176 160 144 / var(--tw-placeholder-opacity));
+}
+.placeholder-mocha\/30::-moz-placeholder {
+  color: rgb(58 43 30 / 0.3);
+}
+.placeholder-mocha\/30::placeholder {
+  color: rgb(58 43 30 / 0.3);
 }
 .opacity-0 {
   opacity: 0;
@@ -2384,6 +2407,11 @@ body {
 .focus\:ring-\[\#c9a96e\]:focus {
   --tw-ring-opacity: 1;
   --tw-ring-color: rgb(201 169 110 / var(--tw-ring-opacity));
+}
+
+.focus\:ring-gold:focus {
+  --tw-ring-opacity: 1;
+  --tw-ring-color: rgb(198 149 44 / var(--tw-ring-opacity));
 }
 
 .group:hover .group-hover\:w-full {

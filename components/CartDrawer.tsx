@@ -113,12 +113,30 @@ export default function CartDrawer() {
                                     <span className="text-mocha/60 text-sm">Sous-total</span>
                                     <span className="font-display text-2xl font-medium text-mocha">{totalPrice} MAD</span>
                                 </div>
-                                <OrderModal
-                                    productName="Sérum Glow Vitamin C"
-                                    productPrice="249 MAD"
-                                    whatsappNumber="212673046307"  // ← ton numéro WhatsApp Business
-                                    instagramUsername="gloa_ma"
-                                />
+                                {/* Footer */}
+                                {items.length > 0 && (
+                                    <div className="p-6 border-t border-gold/10 bg-white/40">
+                                        <div className="flex items-center justify-between mb-4">
+                                            <span className="text-mocha/60 text-sm">Sous-total</span>
+                                            <span className="font-display text-2xl font-medium text-mocha">{totalPrice} MAD</span>
+                                        </div>
+
+                                        {/* ✅ CORRIGÉ : passe le vrai panier ici */}
+                                        <OrderModal
+                                            items={items}
+                                            totalPrice={totalPrice}
+                                            whatsappNumber="212673046307"
+                                            instagramUsername="gloa_ma"
+                                        />
+
+                                        <button
+                                            onClick={clearCart}
+                                            className="w-full py-3 text-mocha/50 text-sm hover:text-red-400 transition-colors"
+                                        >
+                                            Vider le panier
+                                        </button>
+                                    </div>
+                                )}
                                 <button
                                     onClick={clearCart}
                                     className="w-full py-3 text-mocha/50 text-sm hover:text-red-400 transition-colors"
