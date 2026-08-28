@@ -97,9 +97,11 @@ function ProductCard({ product, index }: { product: typeof products[0]; index: n
             )}
             <div className="relative overflow-hidden rounded-2xl aspect-[4/5] bg-nude-100 mb-4">
                 <div className="absolute inset-0 bg-gradient-to-t from-mocha/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-10" />
-                <div className="w-full h-full bg-nude-200 flex items-center justify-center text-mocha/30 text-sm font-medium">
-                    {product.image.replace("/products/", "")}
-                </div>
+                <img
+                    src={product.image}
+                    alt={product.name}
+                    className="w-full h-full object-cover"
+                />
                 <motion.div
                     className="absolute inset-0 bg-gold/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
                     initial={false}

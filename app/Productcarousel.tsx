@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import Image from "next/image";
+// import Image from "next/image";
 import useEmblaCarousel from "embla-carousel-react";
 import AutoScroll from "embla-carousel-autoplay";
 import { ChevronLeft, ChevronRight } from "lucide-react";
@@ -68,23 +68,18 @@ export default function ProductCarousel() {
                                         transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
                                         className="group flex h-full flex-col overflow-hidden rounded-3xl bg-white/60 shadow-sm shadow-mocha/5 ring-1 ring-mocha/5"
                                     >
-                                        <div className="relative aspect-[4/5] w-full overflow-hidden bg-nude-100">
-                                            {/* ─────────────────────────────────────
-                          📸 Remplacez l'image dans data/products.ts
-                          (chemin vers /public/products/...)
-                         ───────────────────────────────────── */}
-                                            <Image
+                                        <div className="relative aspect-[4/5] w-full overflow-hidden bg-gray-200">
+                                            <img
                                                 src={product.image}
                                                 alt={product.name}
-                                                fill
-                                                sizes="(max-width: 768px) 80vw, 30vw"
-                                                className="object-cover transition-transform duration-700 group-hover:scale-105"
+                                                style={{
+                                                    position: "absolute",
+                                                    inset: 0,
+                                                    width: "100%",
+                                                    height: "100%",
+                                                    objectFit: "cover",
+                                                }}
                                             />
-                                            {product.tag && (
-                                                <span className="absolute left-4 top-4 rounded-full bg-mocha/90 px-3 py-1 text-[11px] font-semibold uppercase tracking-wide text-cream">
-                                                    {product.tag}
-                                                </span>
-                                            )}
                                         </div>
 
                                         <div className="flex flex-1 flex-col p-5">
