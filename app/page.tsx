@@ -8,6 +8,10 @@ import Autoplay from "embla-carousel-autoplay";
 import Image from "next/image";
 import { products } from "../data/Products";
 import { useCart } from "../components/CartContext";
+import Header3D from "@/components/Header3D";
+import OrderModal from "@/components/OrderModal";
+
+
 
 /* ─── Animation Variants ─── */
 const fadeUp = {
@@ -141,6 +145,7 @@ function ProductCard({ product, index }: { product: typeof products[0]; index: n
 
 /* ─── Main Page ─── */
 export default function Home() {
+    <Header3D />
     const heroRef = useRef(null);
     const { scrollYProgress } = useScroll({
         target: heroRef,

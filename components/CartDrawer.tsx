@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { X, Plus, Minus, ShoppingBag, Trash2 } from "lucide-react";
 import { useCart } from "./CartContext";
 import Image from "next/image";
+import OrderModal from "@/components/OrderModal";
 
 export default function CartDrawer() {
     const { items, isOpen, setIsOpen, removeItem, updateQuantity, totalItems, totalPrice, clearCart } = useCart();
@@ -112,9 +113,7 @@ export default function CartDrawer() {
                                     <span className="text-mocha/60 text-sm">Sous-total</span>
                                     <span className="font-display text-2xl font-medium text-mocha">{totalPrice} MAD</span>
                                 </div>
-                                <button className="w-full py-4 bg-mocha text-cream rounded-full font-semibold text-sm hover:bg-gold transition-colors duration-300 mb-3">
-                                    Passer la commande
-                                </button>
+                                <OrderModal productName="Nom du produit ici" instagramUsername="gloa_ma" />
                                 <button
                                     onClick={clearCart}
                                     className="w-full py-3 text-mocha/50 text-sm hover:text-red-400 transition-colors"
