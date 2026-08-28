@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Fraunces, Manrope } from "next/font/google";
-import "/app/global.css";
+import "./global.css";
 
 const fraunces = Fraunces({
     subsets: ["latin"],
@@ -30,7 +30,7 @@ export default function RootLayout({
 }) {
     return (
         <html lang="fr">
-            <body className={`${fraunces.variable} ${manrope.variable} font-body`}>
+            <body className={`${fraunces.variable} ${manrope.variable} font-body antialiased`}>
                 {children}
             </body>
         </html>
