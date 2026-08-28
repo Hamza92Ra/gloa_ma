@@ -20,48 +20,48 @@ export type Product = {
 export const products: Product[] = [
     {
         id: "product-1",
-        name: "Nom du produit 1",
+        name: "Packs Urban Complet",
         description:
-            "Description courte du produit : à quoi il sert, pour quel type de peau, et ce qui le rend spécial.",
-        price: "149 MAD",
+        "",
+        price: "249 MAD",
         image: "/products/product-1.png",
         tag: "Best-seller",
     },
 
     {
         id: "product-2",
-        name: "Nom du produit 2",
+        name: "Pack urban bleu à l'acide hyaluronique et collagne",
         description:
-            "Description courte du produit : à quoi il sert, pour quel type de peau, et ce qui le rend spécial.",
-        price: "179 MAD",
+            "",
+        price: "229 MAD",
         image: "/products/product-2.jpg",
     },
 
     {
         id: "product-3",
-        name: "Nom du produit 3",
+        name: "Pack urban keratine intense",
         description:
-            "Description courte du produit : à quoi il sert, pour quel type de peau, et ce qui le rend spécial.",
-        price: "199 MAD",
+            "",
+        price: "219 MAD",
         image: "/products/product-3.jpg",
     },
 
     {
         id: "product-4",
-        name: "Nom du produit 4",
+        name: "Pack urban biotine keratine ",
         description:
-            "Description courte du produit : à quoi il sert, pour quel type de peau, et ce qui le rend spécial.",
-        price: "229 MAD",
+            "",
+        price: "139 MAD",
         image: "/products/product-4.jpg",
         tag: "Nouveau",
     },
 
     {
         id: "product-5",
-        name: "Nom du produit 5",
+        name: "Urban Tea Tree Oil keratine  ",
         description:
-            "Description courte du produit : à quoi il sert, pour quel type de peau, et ce qui le rend spécial.",
-        price: "249 MAD",
+            "",
+        price: "80 MAD",
         image: "/products/product-5.jpg",
     },
 ];
