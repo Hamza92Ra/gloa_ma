@@ -12,6 +12,7 @@ export type Product = {
     name: string;
     description: string;
     price: string;
+    priceNum: number;
     oldPrice?: string;
     image: string;
     tag?: string;
@@ -24,6 +25,8 @@ export const products: Product[] = [
         description:
         "",
         price: "249 MAD",
+        priceNum: 249,
+        oldPrice: "300 MAD",
         image: "/products/product-1.png",
         tag: "Best-seller",
     },
@@ -34,6 +37,8 @@ export const products: Product[] = [
         description:
             "",
         price: "229 MAD",
+        priceNum: 229,
+        oldPrice: "300 MAD",
         image: "/products/product-2.jpg",
     },
 
@@ -43,6 +48,8 @@ export const products: Product[] = [
         description:
             "",
         price: "219 MAD",
+        priceNum: 219,
+        oldPrice: "300 MAD",
         image: "/products/product-3.jpg",
     },
 
@@ -52,6 +59,8 @@ export const products: Product[] = [
         description:
             "",
         price: "139 MAD",
+        priceNum: 139,
+        oldPrice: "300 MAD",
         image: "/products/product-4.jpg",
         tag: "Nouveau",
     },
@@ -62,6 +71,8 @@ export const products: Product[] = [
         description:
             "",
         price: "80 MAD",
+        priceNum: 80,
+        oldPrice: "300 MAD",
         image: "/products/product-5.jpg",
     },
 ];

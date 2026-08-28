@@ -2,10 +2,12 @@
 
 import { useRef, useEffect, useState } from "react";
 import { motion, useScroll, useTransform, useInView, useSpring, useMotionValue } from "framer-motion";
-import { ArrowRight, Sparkles, Star, ShoppingBag, ChevronLeft, ChevronRight, Instagram, Mail, MapPin } from "lucide-react";
+import { ArrowRight, Sparkles, Star, ShoppingBag, ChevronLeft, ChevronRight, Instagram, Mail, MapPin, Minus, Plus, X } from "lucide-react";
 import useEmblaCarousel from "embla-carousel-react";
 import Autoplay from "embla-carousel-autoplay";
+import Image from "next/image";
 import { products } from "../data/Products";
+import { useCart } from "../components/CartContext";
 
 /* ─── Animation Variants ─── */
 const fadeUp = {
@@ -27,8 +29,8 @@ const scaleIn = {
     visible: { opacity: 1, scale: 1, transition: { duration: 0.7, ease: [0.23, 1, 0.32, 1] } }
 };
 
-/* ─── Magnetic Button Component ─── */
-function MagneticButton({ children, className = "" }: { children: React.ReactNode; className?: string }) {
+/* ─── Magnetic Button ─── */
+function MagneticButton({ children, className = "", onClick }: { children: React.ReactNode; className?: string; onClick?: () => void }) {
     const ref = useRef<HTMLButtonElement>(null);
     const x = useMotionValue(0);
     const y = useMotionValue(0);
@@ -55,6 +57,7 @@ function MagneticButton({ children, className = "" }: { children: React.ReactNod
             style={{ x: springX, y: springY }}
             onMouseMove={handleMouseMove}
             onMouseLeave={handleMouseLeave}
+            onClick={onClick}
             className={className}
             whileTap={{ scale: 0.96 }}
         >
@@ -63,7 +66,7 @@ function MagneticButton({ children, className = "" }: { children: React.ReactNod
     );
 }
 
-/* ─── Animated Section Wrapper ─── */
+/* ─── Animated Section ─── */
 function AnimatedSection({ children, className = "" }: { children: React.ReactNode; className?: string }) {
     const ref = useRef(null);
     const isInView = useInView(ref, { once: true, margin: "-80px" });
@@ -83,6 +86,17 @@ function AnimatedSection({ children, className = "" }: { children: React.ReactNo
 
 /* ─── Product Card ─── */
 function ProductCard({ product, index }: { product: typeof products[0]; index: number }) {
+    const { addItem } = useCart();
+
+    const handleAddToCart = () => {
+        addItem({
+            id: product.id,
+            name: product.name,
+            price: product.priceNum,
+            image: product.image,
+        });
+    };
+
     return (
         <motion.div
             variants={fadeUp}
@@ -96,20 +110,19 @@ function ProductCard({ product, index }: { product: typeof products[0]; index: n
                 </span>
             )}
             <div className="relative overflow-hidden rounded-2xl aspect-[4/5] bg-nude-100 mb-4">
+                <Image src={product.image} alt={product.name} fill className="object-cover" />
                 <div className="absolute inset-0 bg-gradient-to-t from-mocha/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-10" />
-                <img
-                    src={product.image}
-                    alt={product.name}
-                    className="w-full h-full object-cover"
-                />
                 <motion.div
                     className="absolute inset-0 bg-gold/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
                     initial={false}
                 />
                 <div className="absolute bottom-4 right-4 z-20 translate-y-12 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500 ease-out">
-                    <div className="w-12 h-12 rounded-full bg-mocha text-cream flex items-center justify-center shadow-lg">
+                    <button
+                        onClick={(e) => { e.stopPropagation(); handleAddToCart(); }}
+                        className="w-12 h-12 rounded-full bg-mocha text-cream flex items-center justify-center shadow-lg hover:bg-gold transition-colors"
+                    >
                         <ShoppingBag size={18} />
-                    </div>
+                    </button>
                 </div>
             </div>
             <h3 className="font-display text-lg font-medium text-mocha mb-1 group-hover:text-gold transition-colors duration-300">
@@ -143,6 +156,8 @@ export default function Home() {
     const [canScrollPrev, setCanScrollPrev] = useState(false);
     const [canScrollNext, setCanScrollNext] = useState(true);
 
+    const { setIsOpen, totalItems } = useCart();
+
     useEffect(() => {
         if (!emblaApi) return;
         const onSelect = () => {
@@ -156,18 +171,23 @@ export default function Home() {
     const scrollPrev = () => emblaApi?.scrollPrev();
     const scrollNext = () => emblaApi?.scrollNext();
 
+    const scrollToSection = (id: string) => {
+        const el = document.getElementById(id);
+        if (el) {
+            el.scrollIntoView({ behavior: "smooth" });
+        }
+    };
+
     return (
         <main className="grain">
-            {/* ─── Floating Orbs ─── */}
+            {/* Floating Orbs */}
             <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
                 <div className="orb absolute -top-40 -left-40 w-[500px] h-[500px] bg-gold/20" style={{ animationDelay: "0s" }} />
                 <div className="orb absolute top-1/3 -right-40 w-[400px] h-[400px] bg-nude-300/30" style={{ animationDelay: "-4s" }} />
                 <div className="orb absolute -bottom-40 left-1/4 w-[600px] h-[600px] bg-blush/40" style={{ animationDelay: "-8s" }} />
             </div>
 
-            {/* ═══════════════════════════════════════
-                NAVBAR
-            ═══════════════════════════════════════ */}
+            {/* ═══ NAVBAR ═══ */}
             <motion.nav
                 initial={{ y: -100 }}
                 animate={{ y: 0 }}
@@ -177,96 +197,147 @@ export default function Home() {
                 <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
                     <motion.a
                         href="#"
-                        className="font-display text-2xl font-semibold text-mocha tracking-tight"
+                        onClick={(e) => { e.preventDefault(); window.scrollTo({ top: 0, behavior: "smooth" }); }}
+                        className="flex items-center gap-3"
                         whileHover={{ scale: 1.02 }}
                     >
-                        Gloa
+                        <div className="w-10 h-10 rounded-xl overflow-hidden bg-[#5C3D4E] flex items-center justify-center">
+                            <Image src="/logo.jpg" alt="Gloa" width={32} height={32} className="object-contain" />
+                        </div>
+                        <span className="font-display text-xl font-semibold text-mocha tracking-tight">Gloa</span>
                     </motion.a>
                     <div className="hidden md:flex items-center gap-8">
-                        {["Produits", "Routine", "Histoire", "Contact"].map((item, i) => (
-                            <motion.a
-                                key={item}
-                                href={`#${item.toLowerCase()}`}
-                                className="text-sm font-medium text-mocha/70 hover:text-mocha transition-colors relative group"
+                        {[
+                            { label: "Produits", id: "produits" },
+                            { label: "Routine", id: "routine" },
+                            { label: "Histoire", id: "histoire" },
+                            { label: "Contact", id: "contact" },
+                        ].map((item, i) => (
+                            <motion.button
+                                key={item.id}
+                                onClick={() => scrollToSection(item.id)}
+                                className="text-sm font-medium text-mocha/70 hover:text-mocha transition-colors relative group bg-transparent"
                                 initial={{ opacity: 0, y: -20 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 transition={{ delay: 0.1 * i + 0.5 }}
                             >
-                                {item}
+                                {item.label}
                                 <span className="absolute -bottom-1 left-0 w-0 h-px bg-gold group-hover:w-full transition-all duration-300" />
-                            </motion.a>
+                            </motion.button>
                         ))}
                     </div>
-                    <MagneticButton className="hidden md:flex items-center gap-2 px-6 py-2.5 bg-mocha text-cream rounded-full text-sm font-medium hover:bg-gold transition-colors duration-300">
+                    <MagneticButton
+                        onClick={() => setIsOpen(true)}
+                        className="hidden md:flex items-center gap-2 px-6 py-2.5 bg-mocha text-cream rounded-full text-sm font-medium hover:bg-gold transition-colors duration-300 relative"
+                    >
                         <ShoppingBag size={16} />
                         Panier
+                        {totalItems > 0 && (
+                            <span className="absolute -top-1.5 -right-1.5 w-5 h-5 bg-gold text-cream text-[10px] font-bold rounded-full flex items-center justify-center">
+                                {totalItems}
+                            </span>
+                        )}
                     </MagneticButton>
                 </div>
             </motion.nav>
 
-            {/* ═══════════════════════════════════════
-                HERO SECTION
-            ═══════════════════════════════════════ */}
+            {/* ═══ HERO ═══ */}
             <section ref={heroRef} className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20">
                 <motion.div
                     style={{ y: heroY, opacity: heroOpacity, scale: heroScale }}
-                    className="relative z-10 max-w-7xl mx-auto px-6 text-center"
+                    className="relative z-10 max-w-7xl mx-auto px-6 grid lg:grid-cols-2 gap-12 items-center"
                 >
-                    <motion.div
-                        initial={{ opacity: 0, scale: 0.8 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        transition={{ duration: 1, ease: [0.23, 1, 0.32, 1] }}
-                        className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/60 border border-gold/20 mb-8"
-                    >
-                        <Sparkles size={14} className="text-gold" />
-                        <span className="text-xs font-semibold tracking-widest uppercase text-mocha/70">
-                            Nouvelle Collection 2026
-                        </span>
-                    </motion.div>
-
-                    <motion.h1
-                        initial={{ opacity: 0, y: 60 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 1, delay: 0.2, ease: [0.23, 1, 0.32, 1] }}
-                        className="font-display text-6xl md:text-8xl lg:text-9xl font-medium text-mocha leading-[0.9] tracking-tight mb-6"
-                    >
-                        Ton glow,
-                        <br />
-                        <span className="shimmer-text italic">sans exploser</span>
-                        <br />
-                        ton budget.
-                    </motion.h1>
-
-                    <motion.p
-                        initial={{ opacity: 0, y: 40 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.8, delay: 0.4, ease: [0.23, 1, 0.32, 1] }}
-                        className="max-w-xl mx-auto text-lg md:text-xl text-mocha/60 mb-10 leading-relaxed"
-                    >
-                        Des produits beauté, cheveux et skincare sélectionnés avec amour pour ta routine glow quotidienne.
-                    </motion.p>
-
-                    <motion.div
-                        initial={{ opacity: 0, y: 30 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.8, delay: 0.6 }}
-                        className="flex flex-col sm:flex-row items-center justify-center gap-4"
-                    >
-                        <MagneticButton className="group flex items-center gap-3 px-8 py-4 bg-mocha text-cream rounded-full text-sm font-semibold tracking-wide hover:bg-gold transition-colors duration-500 shadow-xl shadow-mocha/10">
-                            Découvrir les produits
-                            <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
-                        </MagneticButton>
-                        <motion.button
-                            whileHover={{ scale: 1.02 }}
-                            whileTap={{ scale: 0.98 }}
-                            className="px-8 py-4 rounded-full text-sm font-semibold tracking-wide text-mocha border border-mocha/20 hover:border-gold hover:text-gold transition-colors duration-300"
+                    {/* Text */}
+                    <div className="text-center lg:text-left">
+                        <motion.div
+                            initial={{ opacity: 0, scale: 0.8 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            transition={{ duration: 1, ease: [0.23, 1, 0.32, 1] }}
+                            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/60 border border-gold/20 mb-8"
                         >
-                            Notre histoire
-                        </motion.button>
+                            <Sparkles size={14} className="text-gold" />
+                            <span className="text-xs font-semibold tracking-widest uppercase text-mocha/70">
+                                Nouvelle Collection 2026
+                            </span>
+                        </motion.div>
+
+                        <motion.h1
+                            initial={{ opacity: 0, y: 60 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 1, delay: 0.2, ease: [0.23, 1, 0.32, 1] }}
+                            className="font-display text-5xl md:text-7xl lg:text-8xl font-medium text-mocha leading-[0.9] tracking-tight mb-6"
+                        >
+                            Ton glow,
+                            <br />
+                            <span className="shimmer-text italic">sans exploser</span>
+                            <br />
+                            ton budget.
+                        </motion.h1>
+
+                        <motion.p
+                            initial={{ opacity: 0, y: 40 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.8, delay: 0.4, ease: [0.23, 1, 0.32, 1] }}
+                            className="max-w-xl mx-auto lg:mx-0 text-lg md:text-xl text-mocha/60 mb-10 leading-relaxed"
+                        >
+                            Des produits beauté, cheveux et skincare sélectionnés avec amour pour ta routine glow quotidienne.
+                        </motion.p>
+
+                        <motion.div
+                            initial={{ opacity: 0, y: 30 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.8, delay: 0.6 }}
+                            className="flex flex-col sm:flex-row items-center lg:items-start justify-center lg:justify-start gap-4"
+                        >
+                            <MagneticButton
+                                onClick={() => scrollToSection("produits")}
+                                className="group flex items-center gap-3 px-8 py-4 bg-mocha text-cream rounded-full text-sm font-semibold tracking-wide hover:bg-gold transition-colors duration-500 shadow-xl shadow-mocha/10"
+                            >
+                                Découvrir les produits
+                                <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
+                            </MagneticButton>
+                            <motion.button
+                                whileHover={{ scale: 1.02 }}
+                                whileTap={{ scale: 0.98 }}
+                                onClick={() => scrollToSection("histoire")}
+                                className="px-8 py-4 rounded-full text-sm font-semibold tracking-wide text-mocha border border-mocha/20 hover:border-gold hover:text-gold transition-colors duration-300"
+                            >
+                                Notre histoire
+                            </motion.button>
+                        </motion.div>
+                    </div>
+
+                    {/* Hero Visual */}
+                    <motion.div
+                        initial={{ opacity: 0, x: 60, rotateY: 15 }}
+                        animate={{ opacity: 1, x: 0, rotateY: 0 }}
+                        transition={{ duration: 1.2, delay: 0.4, ease: [0.23, 1, 0.32, 1] }}
+                        className="relative hidden lg:block"
+                    >
+                        <div className="relative aspect-[3/4] rounded-[2.5rem] overflow-hidden shadow-2xl shadow-mocha/10">
+                            <Image
+                                src="/hero-visual.jpg"
+                                alt="Produits Gloa"
+                                fill
+                                className="object-cover"
+                                priority
+                            />
+                            <div className="absolute inset-0 bg-gradient-to-t from-mocha/20 to-transparent" />
+                        </div>
+                        <motion.div
+                            animate={{ y: [0, -20, 0] }}
+                            transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+                            className="absolute -bottom-6 -left-6 w-32 h-32 rounded-full bg-gold/20 backdrop-blur-xl border border-gold/30"
+                        />
+                        <motion.div
+                            animate={{ y: [0, 15, 0] }}
+                            transition={{ duration: 5, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+                            className="absolute -top-6 -right-6 w-24 h-24 rounded-full bg-blush/50 backdrop-blur-xl border border-gold/20"
+                        />
                     </motion.div>
                 </motion.div>
 
-                {/* Decorative spinning ring */}
+                {/* Decorative rings */}
                 <motion.div
                     animate={{ rotate: 360 }}
                     transition={{ duration: 40, repeat: Infinity, ease: "linear" }}
@@ -279,11 +350,9 @@ export default function Home() {
                 />
             </section>
 
-            {/* ═══════════════════════════════════════
-                MARQUEE / TRUST BAR
-            ═══════════════════════════════════════ */}
+            {/* ═══ TRUST BAR ═══ */}
             <AnimatedSection className="py-12 border-y border-gold/10 bg-cream/50 backdrop-blur-sm overflow-hidden">
-                <motion.div variants={fadeUp} className="flex items-center justify-center gap-12 animate-shimmer">
+                <motion.div variants={fadeUp} className="flex items-center justify-center gap-12 flex-wrap">
                     {["Cruelty-Free", "100% Naturel", "Prix Justes", "Made in Morocco", "Livraison Rapide"].map((tag) => (
                         <div key={tag} className="flex items-center gap-2 text-mocha/40 whitespace-nowrap">
                             <Star size={14} className="fill-gold/40 text-gold/40" />
@@ -293,9 +362,7 @@ export default function Home() {
                 </motion.div>
             </AnimatedSection>
 
-            {/* ═══════════════════════════════════════
-                PRODUCTS SECTION
-            ═══════════════════════════════════════ */}
+            {/* ═══ PRODUCTS ═══ */}
             <section id="produits" className="relative z-10 py-32 px-6">
                 <div className="max-w-7xl mx-auto">
                     <AnimatedSection className="text-center mb-20">
@@ -310,7 +377,6 @@ export default function Home() {
                         </motion.p>
                     </AnimatedSection>
 
-                    {/* Carousel */}
                     <AnimatedSection>
                         <motion.div variants={scaleIn} className="relative">
                             <div className="overflow-hidden" ref={emblaRef}>
@@ -327,8 +393,7 @@ export default function Home() {
                                     whileHover={{ scale: 1.1 }}
                                     whileTap={{ scale: 0.9 }}
                                     onClick={scrollPrev}
-                                    className="w-12 h-12 rounded-full border border-mocha/20 flex items-center justify-center text-mocha hover:bg-mocha hover:text-cream transition-all duration-300 disabled:opacity-30"
-                                    disabled={!canScrollPrev}
+                                    className="w-12 h-12 rounded-full border border-mocha/20 flex items-center justify-center text-mocha hover:bg-mocha hover:text-cream transition-all duration-300"
                                 >
                                     <ChevronLeft size={20} />
                                 </motion.button>
@@ -336,8 +401,7 @@ export default function Home() {
                                     whileHover={{ scale: 1.1 }}
                                     whileTap={{ scale: 0.9 }}
                                     onClick={scrollNext}
-                                    className="w-12 h-12 rounded-full border border-mocha/20 flex items-center justify-center text-mocha hover:bg-mocha hover:text-cream transition-all duration-300 disabled:opacity-30"
-                                    disabled={!canScrollNext}
+                                    className="w-12 h-12 rounded-full border border-mocha/20 flex items-center justify-center text-mocha hover:bg-mocha hover:text-cream transition-all duration-300"
                                 >
                                     <ChevronRight size={20} />
                                 </motion.button>
@@ -347,12 +411,9 @@ export default function Home() {
                 </div>
             </section>
 
-            {/* ═══════════════════════════════════════
-                FEATURES / ROUTINE SECTION
-            ═══════════════════════════════════════ */}
+            {/* ═══ ROUTINE ═══ */}
             <section id="routine" className="relative z-10 py-32 px-6 bg-mocha text-cream overflow-hidden">
                 <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,_rgba(198,149,44,0.15),_transparent_50%)]" />
-
                 <div className="max-w-7xl mx-auto relative">
                     <AnimatedSection className="grid lg:grid-cols-2 gap-20 items-center">
                         <div>
@@ -362,7 +423,6 @@ export default function Home() {
                             <motion.h2 variants={fadeUp} className="font-display text-4xl md:text-5xl font-medium mb-8 leading-tight">
                                 3 étapes pour un <span className="italic text-gold-light">rayonnement naturel</span>
                             </motion.h2>
-
                             <div className="space-y-8">
                                 {[
                                     { num: "01", title: "Nettoie en douceur", desc: "Débarrasse ta peau des impuretés sans l'agresser. Un teint frais, prêt à recevoir." },
@@ -382,20 +442,19 @@ export default function Home() {
                                     </motion.div>
                                 ))}
                             </div>
-
                             <motion.div variants={fadeUp} className="mt-10">
-                                <MagneticButton className="flex items-center gap-2 px-6 py-3 bg-gold text-mocha rounded-full text-sm font-semibold hover:bg-gold-light transition-colors duration-300">
+                                <MagneticButton
+                                    onClick={() => scrollToSection("produits")}
+                                    className="flex items-center gap-2 px-6 py-3 bg-gold text-mocha rounded-full text-sm font-semibold hover:bg-gold-light transition-colors duration-300"
+                                >
                                     Voir la routine complète
                                     <ArrowRight size={16} />
                                 </MagneticButton>
                             </motion.div>
                         </div>
-
                         <motion.div variants={scaleIn} className="relative">
-                            <div className="aspect-[3/4] rounded-[2rem] bg-gradient-to-br from-nude-300/20 to-gold/20 backdrop-blur-sm border border-white/10 overflow-hidden">
-                                <div className="w-full h-full flex items-center justify-center text-cream/20 text-sm">
-                                    [Image Routine]
-                                </div>
+                            <div className="aspect-[3/4] rounded-[2rem] bg-gradient-to-br from-nude-300/20 to-gold/20 backdrop-blur-sm border border-white/10 overflow-hidden relative">
+                                <Image src="/hero-visual.jpg" alt="Routine Gloa" fill className="object-cover opacity-60" />
                             </div>
                             <motion.div
                                 animate={{ y: [0, -20, 0] }}
@@ -407,9 +466,7 @@ export default function Home() {
                 </div>
             </section>
 
-            {/* ═══════════════════════════════════════
-                STORY SECTION
-            ═══════════════════════════════════════ */}
+            {/* ═══ STORY ═══ */}
             <section id="histoire" className="relative z-10 py-32 px-6">
                 <div className="max-w-5xl mx-auto text-center">
                     <AnimatedSection>
@@ -425,17 +482,17 @@ export default function Home() {
                             Pas de marketing agressif, pas de prix gonflés — juste des produits qui fonctionnent,
                             sélectionnés avec soin et vendus à prix juste.
                         </motion.p>
-                        <motion.div variants={fadeUp} className="flex items-center justify-center gap-12">
+                        <motion.div variants={fadeUp} className="flex items-center justify-center gap-12 flex-wrap">
                             <div className="text-center">
                                 <div className="font-display text-4xl text-gold mb-1">12K+</div>
                                 <div className="text-sm text-mocha/50">Clientes satisfaites</div>
                             </div>
-                            <div className="w-px h-12 bg-gold/20" />
+                            <div className="w-px h-12 bg-gold/20 hidden sm:block" />
                             <div className="text-center">
                                 <div className="font-display text-4xl text-gold mb-1">50+</div>
                                 <div className="text-sm text-mocha/50">Produits sélectionnés</div>
                             </div>
-                            <div className="w-px h-12 bg-gold/20" />
+                            <div className="w-px h-12 bg-gold/20 hidden sm:block" />
                             <div className="text-center">
                                 <div className="font-display text-4xl text-gold mb-1">4.9</div>
                                 <div className="text-sm text-mocha/50">Note moyenne</div>
@@ -445,9 +502,7 @@ export default function Home() {
                 </div>
             </section>
 
-            {/* ═══════════════════════════════════════
-                NEWSLETTER SECTION
-            ═══════════════════════════════════════ */}
+            {/* ═══ NEWSLETTER ═══ */}
             <section className="relative z-10 py-32 px-6">
                 <AnimatedSection className="max-w-3xl mx-auto">
                     <motion.div
@@ -477,14 +532,17 @@ export default function Home() {
                 </AnimatedSection>
             </section>
 
-            {/* ═══════════════════════════════════════
-                FOOTER
-            ═══════════════════════════════════════ */}
+            {/* ═══ FOOTER ═══ */}
             <footer id="contact" className="relative z-10 border-t border-gold/10 bg-cream/80 backdrop-blur-sm">
                 <div className="max-w-7xl mx-auto px-6 py-20">
                     <AnimatedSection className="grid md:grid-cols-4 gap-12 mb-16">
                         <div className="md:col-span-2">
-                            <h4 className="font-display text-3xl font-medium text-mocha mb-4">Gloa</h4>
+                            <div className="flex items-center gap-3 mb-4">
+                                <div className="w-10 h-10 rounded-xl overflow-hidden bg-[#5C3D4E] flex items-center justify-center">
+                                    <Image src="/logo.jpg" alt="Gloa" width={32} height={32} className="object-contain" />
+                                </div>
+                                <h4 className="font-display text-3xl font-medium text-mocha">Gloa</h4>
+                            </div>
                             <p className="text-mocha/50 max-w-sm leading-relaxed">
                                 Beauté accessible, prix justes, glow garanti.
                                 Parce que ta peau mérite le meilleur sans compromis.
@@ -493,11 +551,19 @@ export default function Home() {
                         <div>
                             <h5 className="font-semibold text-mocha mb-4 text-sm tracking-wider uppercase">Navigation</h5>
                             <ul className="space-y-3">
-                                {["Produits", "Routine", "Histoire", "FAQ"].map((item) => (
-                                    <li key={item}>
-                                        <a href={`#${item.toLowerCase()}`} className="text-mocha/50 hover:text-gold transition-colors duration-300 text-sm">
-                                            {item}
-                                        </a>
+                                {[
+                                    { label: "Produits", id: "produits" },
+                                    { label: "Routine", id: "routine" },
+                                    { label: "Histoire", id: "histoire" },
+                                    { label: "FAQ", id: "contact" },
+                                ].map((item) => (
+                                    <li key={item.id}>
+                                        <button
+                                            onClick={() => scrollToSection(item.id)}
+                                            className="text-mocha/50 hover:text-gold transition-colors duration-300 text-sm bg-transparent"
+                                        >
+                                            {item.label}
+                                        </button>
                                     </li>
                                 ))}
                             </ul>

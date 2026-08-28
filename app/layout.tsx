@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Fraunces, Manrope } from "next/font/google";
 import "./global.css";
+import { CartProvider } from "../components/CartContext";
+import CartDrawer from "../components/CartDrawer";
 
 const fraunces = Fraunces({
     subsets: ["latin"],
@@ -31,7 +33,10 @@ export default function RootLayout({
     return (
         <html lang="fr">
             <body className={`${fraunces.variable} ${manrope.variable} font-body antialiased`}>
-                {children}
+                <CartProvider>
+                    {children}
+                    <CartDrawer />
+                </CartProvider>
             </body>
         </html>
     );

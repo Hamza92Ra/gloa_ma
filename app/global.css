@@ -23,7 +23,6 @@ body {
     border-radius: 2px;
 }
 
-/* ── Premium Utilities ── */
 .shimmer-text {
     background: linear-gradient(100deg, #9c7420 20%, #f0d9a0 40%, #c6952c 60%, #9c7420 80%);
     background-size: 220% auto;
@@ -40,30 +39,6 @@ body {
     border: 1px solid rgba(198, 149, 44, 0.08);
 }
 
-.glass-dark {
-    background: rgba(58, 43, 30, 0.75);
-    backdrop-filter: blur(20px) saturate(180%);
-    -webkit-backdrop-filter: blur(20px) saturate(180%);
-}
-
-/* ── Magnetic Button Base ── */
-.magnetic-btn {
-    transition: transform 0.3s cubic-bezier(0.23, 1, 0.32, 1);
-}
-
-/* ── Image Reveal Mask ── */
-.reveal-mask {
-    clip-path: inset(0 100% 0 0);
-    animation: reveal 1.2s cubic-bezier(0.77, 0, 0.175, 1) forwards;
-}
-
-@keyframes reveal {
-    to {
-        clip-path: inset(0 0 0 0);
-    }
-}
-
-/* ── Floating Orbs ── */
 .orb {
     border-radius: 50%;
     filter: blur(80px);
@@ -77,18 +52,6 @@ body {
     66% { transform: translate(-20px, 30px) scale(0.9); }
 }
 
-/* ── Line Draw ── */
-.line-draw {
-    stroke-dasharray: 1000;
-    stroke-dashoffset: 1000;
-    animation: draw 2s ease forwards;
-}
-
-@keyframes draw {
-    to { stroke-dashoffset: 0; }
-}
-
-/* ── Grain Overlay ── */
 .grain::before {
     content: "";
     position: fixed;
@@ -102,7 +65,6 @@ body {
     background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
 }
 
-/* ── Custom Scrollbar ── */
 ::-webkit-scrollbar {
     width: 8px;
 }
