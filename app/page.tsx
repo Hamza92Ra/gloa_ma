@@ -489,12 +489,12 @@ export default function Home() {
                         </motion.p>
                         <motion.div variants={fadeUp} className="flex items-center justify-center gap-12 flex-wrap">
                             <div className="text-center">
-                                <div className="font-display text-4xl text-gold mb-1">12K+</div>
+                                <div className="font-display text-4xl text-gold mb-1">250</div>
                                 <div className="text-sm text-mocha/50">Clientes satisfaites</div>
                             </div>
                             <div className="w-px h-12 bg-gold/20 hidden sm:block" />
                             <div className="text-center">
-                                <div className="font-display text-4xl text-gold mb-1">50+</div>
+                                <div className="font-display text-4xl text-gold mb-1">20+</div>
                                 <div className="text-sm text-mocha/50">Produits sélectionnés</div>
                             </div>
                             <div className="w-px h-12 bg-gold/20 hidden sm:block" />
@@ -582,11 +582,11 @@ export default function Home() {
                                 </li>
                                 <li className="flex items-center gap-2 text-mocha/50 text-sm">
                                     <MapPin size={14} className="text-gold" />
-                                    Casablanca, Maroc
+                                    Rabat , Maroc
                                 </li>
                                 <li className="flex items-center gap-2 text-mocha/50 text-sm">
                                     <Instagram size={14} className="text-gold" />
-                                    @gloa.ma
+                                    @gloa_ma
                                 </li>
                             </ul>
                         </div>

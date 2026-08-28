@@ -13,6 +13,7 @@ export interface CartItem {
 interface CartContextType {
     items: CartItem[];
     addItem: (item: Omit<CartItem, "quantity">) => void;
+    addToCart: (item: Omit<CartItem, "quantity">) => void;
     removeItem: (id: string) => void;
     updateQuantity: (id: string, quantity: number) => void;
     clearCart: () => void;
@@ -29,60 +30,49 @@ export function CartProvider({ children }: { children: ReactNode }) {
     const [isOpen, setIsOpen] = useState(false);
     const [isLoaded, setIsLoaded] = useState(false);
 
-    // Load from localStorage on mount
     useEffect(() => {
         const saved = localStorage.getItem("gloa-cart");
         if (saved) {
-            try {
-                setItems(JSON.parse(saved));
-            } catch { /* ignore */ }
+            try { setItems(JSON.parse(saved)); } catch { /* ignore */ }
         }
         setIsLoaded(true);
     }, []);
 
-    // Save to localStorage on change
     useEffect(() => {
-        if (isLoaded) {
-            localStorage.setItem("gloa-cart", JSON.stringify(items));
-        }
+        if (isLoaded) localStorage.setItem("gloa-cart", JSON.stringify(items));
     }, [items, isLoaded]);
 
+    // Ouvre le panier (pour "Acheter maintenant")
     const addItem = useCallback((newItem: Omit<CartItem, "quantity">) => {
         setItems((prev) => {
             const existing = prev.find((i) => i.id === newItem.id);
-            if (existing) {
-                return prev.map((i) =>
-                    i.id === newItem.id ? { ...i, quantity: i.quantity + 1 } : i
-                );
-            }
+            if (existing) return prev.map((i) => i.id === newItem.id ? { ...i, quantity: i.quantity + 1 } : i);
             return [...prev, { ...newItem, quantity: 1 }];
         });
         setIsOpen(true);
     }, []);
 
-    const removeItem = useCallback((id: string) => {
-        setItems((prev) => prev.filter((i) => i.id !== id));
+    // N'ouvre PAS le panier (pour "Ajouter au panier")
+    const addToCart = useCallback((newItem: Omit<CartItem, "quantity">) => {
+        setItems((prev) => {
+            const existing = prev.find((i) => i.id === newItem.id);
+            if (existing) return prev.map((i) => i.id === newItem.id ? { ...i, quantity: i.quantity + 1 } : i);
+            return [...prev, { ...newItem, quantity: 1 }];
+        });
     }, []);
 
+    const removeItem = useCallback((id: string) => setItems((prev) => prev.filter((i) => i.id !== id)), []);
     const updateQuantity = useCallback((id: string, quantity: number) => {
-        if (quantity <= 0) {
-            setItems((prev) => prev.filter((i) => i.id !== id));
-        } else {
-            setItems((prev) =>
-                prev.map((i) => (i.id === id ? { ...i, quantity } : i))
-            );
-        }
+        if (quantity <= 0) setItems((prev) => prev.filter((i) => i.id !== id));
+        else setItems((prev) => prev.map((i) => (i.id === id ? { ...i, quantity } : i)));
     }, []);
-
     const clearCart = useCallback(() => setItems([]), []);
 
     const totalItems = items.reduce((sum, i) => sum + i.quantity, 0);
     const totalPrice = items.reduce((sum, i) => sum + i.price * i.quantity, 0);
 
     return (
-        <CartContext.Provider
-            value={{ items, addItem, removeItem, updateQuantity, clearCart, totalItems, totalPrice, isOpen, setIsOpen }}
-        >
+        <CartContext.Provider value={{ items, addItem, addToCart, removeItem, updateQuantity, clearCart, totalItems, totalPrice, isOpen, setIsOpen }}>
             {children}
         </CartContext.Provider>
     );

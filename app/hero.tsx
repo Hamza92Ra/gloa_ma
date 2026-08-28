@@ -3,108 +3,55 @@
 import Image from "next/image";
 import { motion } from "framer-motion";
 
-const fadeUp = {
-    hidden: { opacity: 0, y: 24 },
-    show: (delay = 0) => ({
-        opacity: 1,
-        y: 0,
-        transition: { duration: 0.7, delay, ease: [0.22, 1, 0.36, 1] },
-    }),
-};
-
 export default function Hero() {
     return (
-        <section
-            id="accueil"
-            className="relative mx-auto flex max-w-6xl flex-col-reverse items-center gap-12 overflow-hidden px-6 pb-20 pt-36 md:flex-row md:gap-8 md:pb-32 md:pt-44"
-        >
+        <section className="relative w-full min-h-[80vh] flex flex-col md:flex-row items-center justify-between px-6 md:px-16 py-12 md:py-20 bg-gradient-to-br from-[#faf6f1] to-[#f5ebe0] overflow-hidden">
+
             {/* Texte */}
-            <motion.div
-                initial="hidden"
-                animate="show"
-                className="flex-1 text-center md:text-left"
-            >
-                <motion.p
-                    variants={fadeUp}
-                    custom={0}
-                    className="mb-5 text-xs font-semibold uppercase tracking-[0.2em] text-gold-dark"
-                >
-                    Beauté · Cheveux · Skincare
-                </motion.p>
-
+            <div className="relative z-10 w-full md:w-1/2 text-center md:text-left mb-8 md:mb-0">
                 <motion.h1
-                    variants={fadeUp}
-                    custom={0.1}
-                    className="font-display text-4xl italic leading-[1.08] text-mocha sm:text-5xl md:text-6xl"
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.6 }}
+                    className="text-4xl md:text-6xl font-light text-[#2c1810] leading-tight mb-4"
                 >
-                    Ton <span className="shimmer-text animate-shimmer not-italic">glow</span>,
-                    <br className="hidden md:block" /> sans exploser ton budget
+                    Ton glow,<br />
+                    <span className="italic text-[#c9a96e]">sans compromis</span>
                 </motion.h1>
-
                 <motion.p
-                    variants={fadeUp}
-                    custom={0.22}
-                    className="mx-auto mt-6 max-w-md text-base leading-relaxed text-mocha/70 md:mx-0"
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.6, delay: 0.2 }}
+                    className="text-base md:text-lg text-[#6b5b4f] mb-6 max-w-md mx-auto md:mx-0"
                 >
-                    Des produits skincare, cheveux et beauté sélectionnés avec soin,
-                    pour une routine glow accessible — sans compromis sur la qualité.
+                    La beauté naturelle, sublimée par la science.
                 </motion.p>
-
-                <motion.div
-                    variants={fadeUp}
-                    custom={0.34}
-                    className="mt-9 flex flex-col items-center gap-4 sm:flex-row sm:justify-center md:justify-start"
+                <motion.button
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 0.4 }}
+                    className="px-8 py-3 bg-[#2c1810] text-[#faf6f1] rounded-full font-medium hover:bg-[#c9a96e] transition-colors"
                 >
-                    <a
-                        href="#produits"
-                        className="rounded-full bg-mocha px-7 py-3.5 text-sm font-semibold text-cream transition-all hover:scale-105 hover:shadow-lg hover:shadow-mocha/20"
-                    >
-                        Découvrir nos produits
-                    </a>
-                    <a
-                        href="#waitlist"
-                        className="rounded-full border border-mocha/20 px-7 py-3.5 text-sm font-semibold text-mocha transition-all hover:border-mocha/40 hover:bg-mocha/5"
-                    >
-                        Rejoindre la liste d&apos;attente
-                    </a>
-                </motion.div>
-            </motion.div>
+                    Découvrir la collection
+                </motion.button>
+            </div>
 
-            {/* Image + anneau doré animé (élément signature) */}
+            {/* Image — VISIBLE sur mobile (w-full) et desktop */}
             <motion.div
-                initial={{ opacity: 0, scale: 0.92 }}
+                initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
-                className="relative flex flex-1 items-center justify-center"
+                transition={{ duration: 0.8 }}
+                className="relative w-full md:w-1/2 h-[300px] md:h-[500px]"
             >
-                <div className="relative aspect-square w-full max-w-sm">
-                    {/* Anneau doré tournant */}
-                    <div
-                        aria-hidden
-                        className="absolute -inset-6 rounded-full bg-glow-ring opacity-40 blur-2xl animate-spin-slow"
-                    />
-                    <div
-                        aria-hidden
-                        className="absolute -inset-2 rounded-full bg-glow-ring opacity-70 animate-spin-slower [mask-image:radial-gradient(closest-side,transparent_78%,black_82%)]"
-                    />
-
-                    {/* ─────────────────────────────────────────────
-              📸 IMAGE HERO : remplacez /public/hero.jpg
-              par une photo représentant votre niche
-              (skincare / beauté), format carré de préférence
-             ───────────────────────────────────────────── */}
-                    <div className="absolute inset-3 animate-float overflow-hidden rounded-blob shadow-2xl shadow-mocha/20">
-                        <Image
-                            src="/hero.jpg"
-                            alt="Univers skincare et beauté Gloa"
-                            fill
-                            priority
-                            sizes="(max-width: 768px) 320px, 420px"
-                            className="object-cover"
-                        />
-                    </div>
-                </div>
+                <Image
+                    src="/hero-visual.jpg"
+                    alt="Produits Gloa"
+                    fill
+                    className="object-contain md:object-cover rounded-2xl"
+                    priority
+                    sizes="(max-width: 768px) 100vw, 50vw"
+                />
             </motion.div>
         </section>
     );
-}
+}   
