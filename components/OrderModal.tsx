@@ -1,48 +1,62 @@
 "use client";
 
 import { useState } from "react";
-import { X, Instagram, Copy, Check } from "lucide-react";
+import { X, MessageCircle, Instagram, Copy, Check } from "lucide-react";
 
 interface OrderModalProps {
     productName: string;
-    instagramUsername?: string; // ex: "gloa.ma"
+    productPrice?: string;
+    whatsappNumber: string; // ex: "212612345678" (sans + ni espaces)
+    instagramUsername?: string;
 }
 
-export default function OrderModal({ productName, instagramUsername = "gloa.ma" }: OrderModalProps) {
+export default function OrderModal({
+    productName,
+    productPrice,
+    whatsappNumber,
+    instagramUsername = "gloa.ma"
+}: OrderModalProps) {
     const [isOpen, setIsOpen] = useState(false);
     const [nom, setNom] = useState("");
     const [telephone, setTelephone] = useState("");
     const [ville, setVille] = useState("");
     const [copied, setCopied] = useState(false);
 
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
+    const generateMessage = () => {
+        return `Bonjour Gloa ! 👋\n\nJe voudrais commander :\n🛍️ ${productName}${productPrice ? ` (${productPrice})` : ""}\n\n📋 Mes informations :\n👤 Nom : ${nom}\n📱 Téléphone : ${telephone}\n📍 Ville : ${ville}\n\nMerci beaucoup ! ✨`;
+    };
 
-        const message = `Bonjour Gloa ! 👋\n\nJe voudrais commander :\n🛍️ ${productName}\n\n📋 Mes informations :\n👤 Nom : ${nom}\n📱 Téléphone : ${telephone}\n📍 Localisation : ${ville}\n\nMerci beaucoup ! ✨`;
+    // ✅ WhatsApp : le message apparaît DIRECTEMENT dans la boîte de texte
+    const handleWhatsApp = () => {
+        const message = generateMessage();
+        const encoded = encodeURIComponent(message);
+        window.open(`https://wa.me/${whatsappNumber}?text=${encoded}`, "_blank");
+        setIsOpen(false);
+        resetForm();
+    };
 
-        // Copie le message dans le presse-papiers
+    // Instagram : copie + ouvre le DM (Instagram ne supporte pas le pré-remplissage)
+    const handleInstagram = async () => {
+        const message = generateMessage();
         try {
             await navigator.clipboard.writeText(message);
             setCopied(true);
-            setTimeout(() => setCopied(false), 2000);
+            setTimeout(() => setCopied(false), 3000);
         } catch (err) {
             console.error("Erreur copie:", err);
         }
+        window.open(`https://ig.me/m/${instagramUsername}`, "_blank");
+    };
 
-        // Ouvre Instagram DM (ig.me/m/USERNAME fonctionne sur mobile + desktop)
-        const igLink = `https://ig.me/m/${instagramUsername}`;
-        window.open(igLink, "_blank");
-
-        // Ferme le modal après 1 seconde
-        setTimeout(() => {
-            setIsOpen(false);
-            setNom(""); setTelephone(""); setVille("");
-        }, 1000);
+    const resetForm = () => {
+        setNom("");
+        setTelephone("");
+        setVille("");
     };
 
     return (
         <>
-            {/* Bouton déclencheur — remplace ton bouton "Passer commande" actuel par ça */}
+            {/* Bouton déclencheur */}
             <button
                 onClick={() => setIsOpen(true)}
                 className="w-full py-3 bg-[#2c1810] text-[#faf6f1] rounded-xl font-medium
@@ -59,19 +73,17 @@ export default function OrderModal({ productName, instagramUsername = "gloa.ma" 
                     <div className="relative w-full max-w-md bg-[#faf6f1] rounded-2xl shadow-2xl p-6 lg:p-8"
                         onClick={(e) => e.stopPropagation()}>
 
-                        <button onClick={() => setIsOpen(false)} className="absolute top-4 right-4 text-[#6b5b4f] hover:text-[#2c1810] transition-colors">
+                        <button onClick={() => setIsOpen(false)}
+                            className="absolute top-4 right-4 text-[#6b5b4f] hover:text-[#2c1810] transition-colors">
                             <X size={20} />
                         </button>
 
                         <div className="text-center mb-6">
-                            <div className="w-12 h-12 mx-auto mb-3 bg-gradient-to-br from-[#c9a96e] to-[#e8d5c4] rounded-full flex items-center justify-center">
-                                <Instagram className="text-white" size={24} />
-                            </div>
-                            <h3 className="text-xl font-semibold text-[#2c1810]">Commander sur Instagram</h3>
+                            <h3 className="text-xl font-semibold text-[#2c1810]">Finaliser ta commande</h3>
                             <p className="text-sm text-[#6b5b4f] mt-1">{productName}</p>
                         </div>
 
-                        <form onSubmit={handleSubmit} className="space-y-4">
+                        <form onSubmit={(e) => e.preventDefault()} className="space-y-4">
                             <div>
                                 <label className="block text-sm font-medium text-[#2c1810] mb-1">Nom complet</label>
                                 <input type="text" required value={nom} onChange={(e) => setNom(e.target.value)}
@@ -93,15 +105,25 @@ export default function OrderModal({ productName, instagramUsername = "gloa.ma" 
                                     placeholder="Casablanca, Marrakech..." />
                             </div>
 
-                            <button type="submit"
-                                className="w-full py-3.5 mt-2 bg-gradient-to-r from-[#c9a96e] to-[#b8956a] text-white rounded-xl font-semibold
+                            {/* WhatsApp : message apparaît directement */}
+                            <button type="button" onClick={handleWhatsApp}
+                                className="w-full py-3.5 mt-2 bg-[#25D366] text-white rounded-xl font-semibold
                   transition-all duration-300 hover:shadow-lg hover:scale-[1.02] flex items-center justify-center gap-2">
-                                {copied ? <Check size={18} /> : <Copy size={18} />}
-                                {copied ? "Message copié !" : "Ouvrir Instagram & copier le message"}
+                                <MessageCircle size={20} />
+                                Commander via WhatsApp
+                            </button>
+
+                            {/* Instagram : copie + ouvre DM */}
+                            <button type="button" onClick={handleInstagram}
+                                className="w-full py-3.5 bg-gradient-to-r from-[#833ab4] via-[#fd1d1d] to-[#f77737] text-white rounded-xl font-semibold
+                  transition-all duration-300 hover:shadow-lg hover:scale-[1.02] flex items-center justify-center gap-2">
+                                {copied ? <Check size={18} /> : <Instagram size={18} />}
+                                {copied ? "Message copié ! Ouvre Instagram" : "Commander via Instagram"}
                             </button>
 
                             <p className="text-xs text-center text-[#8a7a6a] mt-3">
-                                Le message sera copié automatiquement. Il te suffira de le coller dans la conversation Instagram.
+                                💡 <strong>WhatsApp</strong> : le message apparaît automatiquement.<br />
+                                📋 <strong>Instagram</strong> : le message est copié, il te suffit de le coller.
                             </p>
                         </form>
                     </div>
@@ -111,7 +133,6 @@ export default function OrderModal({ productName, instagramUsername = "gloa.ma" 
     );
 }
 
-// Icône inline pour éviter l'import si tu ne l'as pas déjà
 function ShoppingBagIcon() {
     return (
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
