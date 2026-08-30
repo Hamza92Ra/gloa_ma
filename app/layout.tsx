@@ -3,6 +3,7 @@ import { Fraunces, Manrope } from "next/font/google";
 import "./global.css";
 import { CartProvider } from "../components/CartContext";
 import CartDrawer from "../components/CartDrawer";
+import { Analytics } from "@vercel/analytics/next";
 
 const fraunces = Fraunces({
     subsets: ["latin"],
