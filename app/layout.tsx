@@ -38,6 +38,7 @@ export default function RootLayout({
                     {children}
                     <CartDrawer />
                 </CartProvider>
+                <Analytics />
             </body>
         </html>
     );

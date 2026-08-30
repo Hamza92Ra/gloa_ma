@@ -19,7 +19,7 @@ export default function OrderModal({
     productName,
     productPrice,
     whatsappNumber,
-    instagramUsername = "gloa.ma"
+    instagramUsername = "nonononononod"
 }: OrderModalProps) {
     const [isOpen, setIsOpen] = useState(false);
     const [nom, setNom] = useState("");

@@ -586,7 +586,7 @@ export default function Home() {
                                 </li>
                                 <li className="flex items-center gap-2 text-mocha/50 text-sm">
                                     <Instagram size={14} className="text-gold" />
-                                    @gloa_ma
+                                    fuck it 
                                 </li>
                             </ul>
                         </div>
